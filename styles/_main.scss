@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css?family=Kanit:200,200i,300,400,500');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+// @import '_swap.scss';
+// @import '_index.scss';
+
+* {
+  font-family: "Kanit", "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
+body {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: "Kanit", "Roboto", "Helvetica", "Arial", sans-serif !important;
+  position: relative;
+
+  background-color: #f2f2f273;
+}
+
+.MuiAppBar-colorPrimary {
+  background-color: #4C2981 !important;
+}
+
+.paper {
+  padding: 15px;
+}
+
+.paper-hilight {
+  // background-color: #FEF2CC !important;
+  min-height: 120px;
+}
+
+.paper-red {
+  background-color: #FBE5D6 !important;
+}
+
+.paper-blue {
+  background-color: #DEEBF7 !important;
+}
+
+.paper-green {
+  background-color: #E2F0D9 !important;
+}
+
+.space {
+  margin: 10px 0;
+  display: flex;
+}
+
+.header-text {
+  color: #4C2981;
+  font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+
+.non-shadow {
+  box-shadow: unset !important;
+}
+
+.MuiTableCell-root {
+  border-color: #BF9000 !important;
+}
+
+.paper-box-port {
+
+
+  .sub-title-header {
+    font-size: 14px;
+  }
+  .sub-title-value {
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
+.paper-header-number {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  margin-top: -8px;
+}
+
+.MuiPaper-rounded {
+  border-radius: 10px !important;
+}
+
+.paper-full-width {
+  height: 100%;
+}
+
+.MuiTableCell-root {
+  font-size: 15px !important;
+}
+
+.selected-menu {
+  color: #ff6b24 !important;
+  border-bottom: 2px solid #ff6b24 !important;
+  border-radius: 0px !important;
+}
+
+.without-underline {
+  border-bottom: none !important;
+}
+
+.green-text {
+  color: green !important;
+}
+
+.red-text {
+  color: red !important;
+}
+
+.vaults-detail {
+  .switch {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .info {
+    margin: 0 auto;
+    margin-bottom: 30px;
+
+    .number {
+      text-align: right;
+      padding-right: 55px;
+    }
+
+    tr {
+      height: 38px;
+    }
+  }
+
+  .deposit-button {
+    color: #4C2981 !important;
+    border-color: #c7c7c7 !important;
+  }
+
+  .withdrawal-button {
+    color: #CCA83B !important;
+    border-color: #c7c7c7 !important;
+  }
+
+  .deposit-button-selected {
+    color: #fff !important;
+    background-color: #4C2981 !important;
+    border-color: #c7c7c7 !important;
+  }
+
+  .withdrawal-button-selected {
+    color: #fff !important;
+    background-color: #CCA83B !important;
+    border-color: #c7c7c7 !important;
+  }
+
+  .input-field {
+    width: 150px;
+  }
+}
+
+.highest-apy {
+  background-color: #E2F0D9 !important;
+  color: #548235 !important;
+}
+
+#standard-start-adornment {
+  text-align: right;
+  margin-right: 10px;
+}
+
+.MuiGrid-spacing-xs-3 {
+  width: 100% !important;
+}
