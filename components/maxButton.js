@@ -35,18 +35,26 @@ export default function InputAdornments(props) {
 
   const handleMax = () => {
     setValues(props.max);
+    props.onGetAmount(props.max);
   };
+
+  const handleAmountChange = (e) => {
+    console.log('e.target.value', e.target.value)
+    props.onGetAmount(e.target.value);
+    // setValues(e.target.value);
+  }
 
   return (
     <div className={classes.root}>
         <TextField
+          onChange={handleAmountChange}
           id="standard-start-adornment"
           className={clsx(classes.margin, classes.textField) + ' eiei'}
           InputProps={{
             // endAdornment: <InputAdornment position="start">Kg</InputAdornment>,
             endAdornment: <div onClick={handleMax}>MAX</div>
           }}
-          value={values}
+          // value={values}
           // style={{ textAlign: 'right', marginRight: '10px' }}
         />
     </div>

@@ -18,6 +18,13 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import TextField from '@material-ui/core/TextField';
 import MaxButton from './maxButton';
+import { depositVaults, withdrawVaults, approveBUSD, balanceOfpBUSD, balanceOfBUSD, getPricePerFullShare } from '../api/smartContract';
+
+function numberWithCommasAnd2Decimal(x, y = 2) {
+  x = parseFloat(x);
+  x = x.toFixed(2);
+  return x.toLocaleString();
+}  
 
 const useRowStyles = makeStyles({
   root: {
@@ -50,6 +57,21 @@ function Row(props) {
 
   const [mode, setMode] = React.useState(true);
 
+  const [isWithdrawalConfirm, setIsWithdrawalConfirm] = React.useState(false);
+
+
+  const [depositAmount, setDepositAmount] = React.useState(0);
+
+  const handleDepositAmount = (e) => {
+    setDepositAmount(e);
+  };
+
+  const handleSubmitDeposit = () => {
+    approveBUSD();
+    // increaseAllowanceBUSD();
+    depositVaults(depositAmount)
+  };
+
   const DepositElement = () => {
     return (
       <div className="vaults-detail">
@@ -62,28 +84,59 @@ function Row(props) {
         <table className="info">
           <tr>
             <td style={{ width: '40%' }}>Balance:</td>
-            <td className="number">3.3491</td>
-            <td>CAKE-BNB LP</td>
+            <td className="number">{balanceOfBUSDMe}</td>
+            <td>BUSD</td>
           </tr>
           <tr>
             <td>I would like to deposit</td>
             <td>
-              <MaxButton max="3.3491"/>
+              {/* <MaxButton max="3.3491" onGetAmount={handleDepositAmount} /> */}
+              <TextField
+                onChange={e => setDepositAmount(e.target.value)}
+                id="standard-start-adornment"
+                value={depositAmount}
+                type="number"
+              />
             </td>
-            <td>CAKE-BNB LP</td>
+            <td>BUSD</td>
           </tr>
           <tr>
             <td colspan="2" className="red-text">* Please be noted that there is withdrawal fee at 0.25 % ​</td>
           </tr>
         </table>
         <div className="switch">
-          <Button variant="contained" color="primary" className="deposit-button-selected">
+          <Button variant="contained" color="primary" className="deposit-button-selected" onClick={handleSubmitDeposit}>
             Deposit
           </Button>
         </div>
       </div>
     )
   }
+
+  const handleToWithdrawalConfirm = () => {
+    setIsWithdrawalConfirm(!isWithdrawalConfirm)
+  };
+
+  const [withdrawAmount, setWithdrawAmount] = React.useState(0);
+
+  const handleSubmitWithdraw = () => {
+    withdrawVaults(withdrawAmount)
+  };
+
+  const [balanceOfMe, setBalanceOfMe] = React.useState(0);
+  const [balanceOfBUSDMe, setBalanceOfBUSDMe] = React.useState(0);
+  const [pricePerFullShare, setPricePerFullShare] = React.useState(0);
+
+  React.useEffect(() => {
+    (async () => {
+      const balanceOfMee = await balanceOfpBUSD();
+      setBalanceOfMe(balanceOfMee);
+      setBalanceOfBUSDMe(await balanceOfBUSD());
+      setPricePerFullShare(await getPricePerFullShare());
+    })();
+
+  }, []);
+  
 
   const WithdrawalElement = () => {
     return (
@@ -94,39 +147,75 @@ function Row(props) {
             <Button variant="contained" color="primary" className="withdrawal-button-selected">Withdrawal</Button>
           </ButtonGroup>
         </div>
-        <table className="info">
-          <tr>
-            <td style={{ width: '40%' }}>Deposited:</td>
-            <td className="number">3.3491</td>
-            <td>BUSD</td>
-          </tr>
-          <tr>
-            <td>Share:</td>
-            <td className="number">3.3491</td>
-            <td>BUSD</td>
-          </tr>
-          <tr>
-            <td>I would like to withdrawal</td>
-            <td>
-              <MaxButton max="3.3491" className="input-field"/>
-            </td>
-            <td>BUSD</td>
-          </tr>
-          <tr>
-            <td colspan="2" className="red-text">* 0.25 % withdrawal fee will be applied​​</td>
-          </tr>
-        </table>
-        <div className="switch">
-          <Button variant="contained" color="primary" className="withdrawal-button-selected">
-            Next
-          </Button>
+        {!isWithdrawalConfirm ? 
+          <div>
+            <table className="info">
+              <tr>
+                <td style={{ width: '40%' }}>pBUSD Balance:</td>
+                <td className="number">{balanceOfMe}</td>
+                <td>pBUSD</td>
+              </tr>
+              <tr>
+                <td>Earn:</td>
+                <td className="number">{balanceOfMe * pricePerFullShare}</td>
+                <td>pBUSD</td>
+              </tr>
+              <tr>
+                <td>I would like to redeem</td>
+                <td>
+                  {/* <MaxButton max="3.3491" className="input-field"/> */}
+                  <TextField
+                    onChange={e => setWithdrawAmount(e.target.value)}
+                    id="standard-start-adornment"
+                    value={withdrawAmount}
+                    type="number"
+                  />
+                </td>
+                <td>pBUSD</td>
+              </tr>
+              <tr>
+                <td colspan="2" className="red-text">* 0.25 % withdrawal fee will be applied​​</td>
+              </tr>
+            </table>
+            <div className="switch">
+              <Button variant="contained" color="primary" className="withdrawal-button-selected" onClick={handleToWithdrawalConfirm}>
+                Next
+              </Button>
+            </div>
+          </div> 
+          : 
+          <div>
+          <table className="info">
+            <tr>
+              <td style={{ width: '40%' }}>Withdraw:</td>
+              <td className="number">{withdrawAmount * pricePerFullShare}</td>
+              <td>BUSD</td>
+            </tr>
+            <tr>
+              <td>0.25% withdrawal fee:</td>
+              <td className="number">{(withdrawAmount * 0.25) / 100}</td>
+              <td>BUSD</td>
+            </tr>
+            <tr>
+              <td>Total earnings</td>
+              <td className="number">{withdrawAmount - ((withdrawAmount * 0.25) / 100)}</td>
+              <td>BUSD</td>
+            </tr>
+          </table>
+          <div className="switch">
+            <Button variant="contained" color="primary" className="withdrawal-button-selected" onClick={handleSubmitWithdraw}>
+              Withdraw
+            </Button>
+          </div>
         </div>
+        }
       </div>
     )
   };
 
   const handleSwitchMode = () => {
     setMode(!mode)
+    setIsWithdrawalConfirm(false);
   };
 
   return (
@@ -176,11 +265,32 @@ Row.propTypes = {
   }).isRequired,
 };
 
-const rows = [
-  createData('CAKE-BNB LP', 3.3491, 1.1326, 152, 0.8, 8.94),
-];
+
 
 export default function CollapsibleTable() {
+
+  const [balanceOfMe, setBalanceOfMe] = React.useState(0);
+  const [balanceOfBUSDMe, setBalanceOfBUSDMe] = React.useState(0);
+  const [pricePerFullShare, setPricePerFullShare] = React.useState(0);
+
+  const [rows, setRows] = React.useState([]);
+
+  React.useEffect(() => {
+    (async () => {
+      const balanceOfMee = await balanceOfpBUSD();
+      setBalanceOfMe(balanceOfMee);
+      setBalanceOfBUSDMe(await balanceOfBUSD());
+      setPricePerFullShare(await getPricePerFullShare());
+      console.log('balanceOfMe', balanceOfMe, (pricePerFullShare))
+
+      setRows([createData('pBUSD', balanceOfMe, (balanceOfMe * pricePerFullShare), '152%', '0.8%', 8.94),])
+  
+    })();
+
+  }, [balanceOfMe, pricePerFullShare]);
+
+  
+
   return (
     <TableContainer component={Paper} className="non-shadow">
       <Table aria-label="collapsible table">
